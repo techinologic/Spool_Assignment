@@ -1,8 +1,11 @@
+// Paolo T. Inocencion
+// COSC306 Operating Systems
+// Spool Programming Assignment
+// March 8, 2018
+
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
@@ -21,25 +24,11 @@ public class Main {
         int btp = 0;
         int tbtp = 0;
 
-        //initialize array with '-'
-        String s1[] = new String[bytePerSegment];
-        String s2[] = new String[bytePerSegment];
-        String s3[] = new String[bytePerSegment];
-        String s4[] = new String[bytePerSegment];
-
-
-        for (int i = 0; i < bytePerSegment; i++) {
-            s1[i] = "-";
-            s2[i] = "-";
-            s3[i] = "-";
-            s4[i] = "-";
-        }
-
         Path filePath = Paths.get("src/nums.txt");
         Scanner scanner = new Scanner(filePath);
 
         for (int i = 0; scanner.hasNext(); i++) {
-            if (i==3) {
+            if (i == 3) {
                 System.out.println(pid + " " + btp + " " + tbtp);
 
                 //check tbtp if 0;
@@ -54,10 +43,10 @@ public class Main {
                     //save btp, which will be the letter to be printed
                     letter[getSegment(pid)] = getCharForNumber(btp);
 
+                    //just to test count number
+                    System.out.println("pid " + pid + " assigned to S" + (getSegment(pid) + 1));
                 } else {
 
-                    //just to test count number
-                    System.out.println("pid in s" + (getSegment(pid)+1));
 
                     //check if count < limit(tbtp)
                     if (count[getSegment(pid)] < limit[getSegment(pid)]) {
@@ -66,18 +55,32 @@ public class Main {
                         count[getSegment(pid)] += btp; //adds 4
 
                         //to check count value
-                        System.out.println("Count in s" + (getSegment(pid) + 1)
-                                + " " + count[getSegment(pid)]);
+                        System.out.println("Count in S" + (getSegment(pid) + 1)
+                                + ": " + count[getSegment(pid)]);
 
                         //if count is >= tbtp, print all segments
 
                         //check again if = to tbtp
-                        if (count[getSegment(pid)] == limit[getSegment(pid)]) {
-                            System.out.println("tbtp reached: print segment");
+                        if (count[getSegment(pid)] >= limit[getSegment(pid)]) {
+                            System.out.println("tbtp in S" + (getSegment(pid) + 1) + " reached: print whole segment\n");
 
                             // print all segments then clear which segment is full
                             printAll();
+                            System.out.println();
+                            System.out.println("reinitialize S" + (getSegment(pid) + 1));
+
                             reinitializeSegment(getSegment(pid));
+                            System.out.println();
+                            printAll();
+
+                            System.out.println();
+                            System.out.println("PIDs:");
+                            System.out.println("S1: " + segment[0]);
+                            System.out.println("S2: " + segment[1]);
+                            System.out.println("S3: " + segment[2]);
+                            System.out.println("S4: " + segment[3]);
+                            System.out.println();
+
                         }
                     }
 
@@ -85,18 +88,19 @@ public class Main {
                 i = 0;
             }
 
-            if (scanner.hasNextInt() && i==0) {
+            if (scanner.hasNextInt() && i == 0) {
                 pid = scanner.nextInt();
             }
-            if (scanner.hasNextInt() && i==1) {
+            if (scanner.hasNextInt() && i == 1) {
                 btp = scanner.nextInt();
             }
-            if (scanner.hasNextInt() && i==2) {
+            if (scanner.hasNextInt() && i == 2) {
                 tbtp = scanner.nextInt();
             }
         }
     }
 
+    // method to print all segments
     public static void printAll() {
 
         System.out.print("S1: ");
@@ -135,7 +139,6 @@ public class Main {
                 //print dashes for unused spaces
                 System.out.print("- ");
             }
-
         }
 
         System.out.println();
@@ -180,15 +183,17 @@ public class Main {
         System.out.println();
     }
 
-    public static void reinitializeSegment(int segmentNum){
+    // method to reinitialize a segment to - and clear PID
+    public static void reinitializeSegment(int segmentNum) {
 
-        segment[segmentNum] = 0;
         for (int i = 0; i < bytePerSegment; i++) {
 
             //change all contents to -
             letter[segmentNum] = "-";
 
         }
+        segment[segmentNum] = 0;
+
     }
 
 
@@ -197,10 +202,9 @@ public class Main {
 
         //find if pid is in segments
         for (int i = 0; i < segment.length; i++) {
-            if (pid == segment[i]){
+            if (pid == segment[i]) {
                 return i;
             }
-
         }
 
         // if pid is not found in segments
@@ -214,7 +218,7 @@ public class Main {
 
         //find free segment and save pid to it.
         for (int i = 0; i < segment.length; i++) {
-            if (segment[i] == 0 ) {
+            if (segment[i] == 0) {
                 segment[i] = pid;
                 return i;
             }
@@ -224,10 +228,10 @@ public class Main {
     }
 
 
+    // method to convert a number to an Alphabet
     public static String getCharForNumber(int i) {
-        return i > 0 && i < 27 ? String.valueOf((char)(i + 64)) : null;
+
+        return i > 0 && i < 27 ? String.valueOf((char) (i + 64)) : null;
     }
-
-
 
 }
