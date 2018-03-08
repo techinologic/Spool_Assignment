@@ -10,7 +10,9 @@ public class Main {
     final static int segment[] = new int[4];
     final static int count[] = new int[4];
     final static int limit[] = new int[4];
-    final static int letter[] = new int[4];
+    final static String letter[] = new String[4];
+
+    final static int bytePerSegment = 50;
 
 
     public static void main(String[] args) throws IOException {
@@ -20,13 +22,13 @@ public class Main {
         int tbtp = 0;
 
         //initialize array with '-'
-        String s1[] = new String[50];
-        String s2[] = new String[50];
-        String s3[] = new String[50];
-        String s4[] = new String[50];
+        String s1[] = new String[bytePerSegment];
+        String s2[] = new String[bytePerSegment];
+        String s3[] = new String[bytePerSegment];
+        String s4[] = new String[bytePerSegment];
 
 
-        for (int i = 0; i < 50; i++) {
+        for (int i = 0; i < bytePerSegment; i++) {
             s1[i] = "-";
             s2[i] = "-";
             s3[i] = "-";
@@ -43,26 +45,27 @@ public class Main {
                 //check tbtp if 0;
                 if (tbtp > 0) { //means new program
 
-                    //save btp to count
-                    //count[assignSegment(pid)] = btp;
+                    // if new program assign pid to segment
+                    assignSegment(pid);
 
                     //save limit
-                    assignSegment(pid);
                     limit[getSegment(pid)] = tbtp;
-                    letter[getSegment(pid)] = btp;
+
+                    //save btp, which will be the letter to be printed
+                    letter[getSegment(pid)] = getCharForNumber(btp);
 
                 } else {
 
-                    //test count number
+                    //just to test count number
                     System.out.println("pid in s" + (getSegment(pid)+1));
 
-                    //check if count < limit
+                    //check if count < limit(tbtp)
                     if (count[getSegment(pid)] < limit[getSegment(pid)]) {
 
                         // add btp to count
                         count[getSegment(pid)] += btp; //adds 4
 
-                        //check count value
+                        //to check count value
                         System.out.println("Count in s" + (getSegment(pid) + 1)
                                 + " " + count[getSegment(pid)]);
 
@@ -72,8 +75,9 @@ public class Main {
                         if (count[getSegment(pid)] == limit[getSegment(pid)]) {
                             System.out.println("tbtp reached: print segment");
 
-                            // pass which char to print and count
-                            print(limit[getSegment(pid)], pid); //print segment and re-initialize to -
+                            // print all segments then clear which segment is full
+                            printAll();
+                            reinitializeSegment(getSegment(pid));
                         }
                     }
 
@@ -93,27 +97,102 @@ public class Main {
         }
     }
 
+    public static void printAll() {
 
-    // method to print all segments
-    public static void print(int pid, int btp) {
-
-        //print number of letters
         System.out.print("S1: ");
+        for (int i = 0; i < bytePerSegment; i++) {
+            if (i < limit[0]) {
+                // move to nextline 25 bytes
+                if (i == 25) {
+                    System.out.println();
+                }
+                // print the letter
+                System.out.print(letter[0] + " ");
+            } else {
+                if (i == 25) {
+                    System.out.println();
+                }
+                //print dashes for unused spaces
+                System.out.print("- ");
+            }
 
-        //count of s1
-        for (int i = 0; i < limit[getSegment(pid)]; i++) {
-            System.out.print(getCharForNumber(letter[getSegment(pid)]));
-        }
-        // print dashes
-        for (int i = 0; i < 50-btp; i++) {
-            System.out.print("-");
         }
         System.out.println();
 
+        System.out.print("S2: ");
+        for (int i = 0; i < bytePerSegment; i++) {
+            if (i < limit[1]) {
+                // move to nextline 25 bytes
+                if (i == 25) {
+                    System.out.println();
+                }
+                // print the letter
+                System.out.print(letter[1] + " ");
+            } else {
+                if (i == 25) {
+                    System.out.println();
+                }
+                //print dashes for unused spaces
+                System.out.print("- ");
+            }
 
+        }
+
+        System.out.println();
+        System.out.print("S3: ");
+        for (int i = 0; i < bytePerSegment; i++) {
+            if (i < limit[2]) {
+                // move to nextline 25 bytes
+                if (i == 25) {
+                    System.out.println();
+                }
+                // print the letter
+                System.out.print(letter[2] + " ");
+            } else {
+                if (i == 25) {
+                    System.out.println();
+                }
+                //print dashes for unused spaces
+                System.out.print("- ");
+            }
+
+        }
+        System.out.println();
+
+        System.out.print("S4: ");
+        for (int i = 0; i < bytePerSegment; i++) {
+            if (i < limit[3]) {
+                // move to nextline 25 bytes
+                if (i == 25) {
+                    System.out.println();
+                }
+                // print the letter
+                System.out.print(letter[3] + " ");
+            } else {
+                if (i == 25) {
+                    System.out.println();
+                }
+                //print dashes for unused spaces
+                System.out.print("- ");
+            }
+
+        }
+        System.out.println();
     }
 
-    // find what segment pid is saved
+    public static void reinitializeSegment(int segmentNum){
+
+        segment[segmentNum] = 0;
+        for (int i = 0; i < bytePerSegment; i++) {
+
+            //change all contents to -
+            letter[segmentNum] = "-";
+
+        }
+    }
+
+
+    // get which segment number the pid is assigned
     public static int getSegment(int pid) {
 
         //find if pid is in segments
@@ -129,6 +208,7 @@ public class Main {
 
         return 0;
     }
+
     //assign to segment and return segment number.
     public static int assignSegment(int pid) {
 
@@ -143,11 +223,6 @@ public class Main {
         return 0;
     }
 
-    public void initializeSegment() {
-        for (int i = 0; i < segment.length; i++) {
-            segment[i] = 0;
-        }
-    }
 
     public static String getCharForNumber(int i) {
         return i > 0 && i < 27 ? String.valueOf((char)(i + 64)) : null;
